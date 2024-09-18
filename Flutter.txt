@@ -1,0 +1,972 @@
+//Create flutter app command
+flutter create app_name
+
+//Print simple hallo world
+void main() {
+  runApp(const MaterialApp(home: Text('Hello World')));
+}
+
+//to make it looks good with scaffold
+void main() {
+  runApp(const MaterialApp(home:Scaffold(body :Text('Hello World'))));
+}
+
+//To get text in to the middle
+void main() {
+  runApp(const MaterialApp(home:Scaffold(body :Center(child: Text('Hello World')))));
+}
+
+//Add a background color
+home: Scaffold(
+        backgroundColor: Colors.blue,
+        body: Center(
+          child: Text('Hello World'),
+        ),
+      ),
+
+//Container wrapper for configure styles 
+when we use container wrapper it's parents should not have
+const
+
+Give a gradient background using gradient in the decoration wrapper
+
+body: Container(
+          decoration: const  BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                const Color.fromARGB(255, 10, 21, 122),
+                Color.fromARGB(255, 62, 13, 147),
+              ],
+            ),
+          ),
+          child: const Center(
+            child: Text('Hello World'),
+          ),
+        ),
+
+// begin and end with gradient 
+gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 10, 21, 122),
+                Color.fromARGB(255, 62, 13, 147),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+// Changing the text color, font size, and weight
+using Text-->style:TextStyle
+
+            child: Text(
+              'Hello World',
+              style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400),
+            ),
+
+//Custom widgets creation using classes
+
+class GradientContainer extends StatelessWidget{
+  @override
+  Widget build(context){
+    return Container(
+          //rest of the code
+        );
+  }
+}
+
+//constructor to pass key to the super class and anable optimizations
+class GradientContainer extends StatelessWidget{
+
+  const GradientContainer({super.key});
+  @override
+  Widget build(context){
+    return Container(
+        );
+  }
+}
+
+//after anabling optimization by adding const
+we can use const to higher possible place
+in this case 
+
+void main() {
+  runApp(
+    const MaterialApp(
+      home: Scaffold(
+        body: GradientContainer()
+      ),
+    ),
+  );
+}
+
+//create variables
+var startAlign = Alignment.topLeft;
+var endAlign = Alignment.bottomRight;
+
+in the gradient -->
+begin: startAlign, 
+end: endAlign,
+
+to use const to higher places variables should use
+const
+const startAlign = Alignment.topLeft;
+const endAlign = Alignment.bottomRight;
+
+//Make functions reusable by getting parameter input from the outside
+using constructor
+
+class TextWidget extends StatelessWidget {
+  const TextWidget(this.text, {super.key});  //this.text = text
+  final String text; // make this final to use const in higher level
+  @override
+  Widget build(context) {
+    return Text(
+      text,  //Use it here
+      style: const TextStyle(
+          fontSize: 30, color: Colors.white, fontWeight: FontWeight.w400),
+    );
+  }
+}
+
+//Set colors using arguments
+
+Array approach-->
+
+class GradientContainer extends StatelessWidget {
+  const GradientContainer({super.key, required this.colors});
+  final List<Color> colors;
+  @override
+  Widget build(context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: colors,
+          begin: startAlign,
+          end: endAlign,
+        ),
+      ),
+      child:const Center(
+        child: TextWidget("Hi, I'm Rashmika"),
+      ),
+    );
+  }
+}
+
+Array parameter approach-->
+
+class GradientContainer extends StatelessWidget {
+  const GradientContainer(this.color1, this.color2,{super.key});
+
+  final Color color1;
+  final Color color2;
+  
+  @override
+  Widget build(context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [color1, color2],
+          begin: startAlign, // Alignment.topLeft:
+          end: endAlign, // Alignment.bottomRight:
+        ),
+      ),
+      child:const Center(
+        child: TextWidget("Hi, I'm Rashmika"),
+      ),
+    );
+  }
+}
+to pass parameters -->
+
+void main() {
+  runApp(
+    const MaterialApp(
+      home: Scaffold(
+          body: GradientContainer(Color.fromARGB(255, 10, 21, 122),
+              Color.fromARGB(255, 62, 13, 147))),
+    ),
+  );
+}
+
+//To import assets like images we should change pubspec.yaml
+file like thise
+in this indentations are matters
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/dice-1.png
+
+to access those images 
+child: Image.asset(
+          'assets/images/dice-1.png',
+          width: 160,
+        ),
+
+//To another element to center
+--> child: Column
+
+child: Column(
+          mainAxisSize: MainAxisSize.min, //it takes full heighht by default. to make it hug content this must use
+          children: [       //make elements as array
+            Image.asset(
+              'assets/images/dice-1.png',
+              width: 160,
+            ),
+            TextButton(
+              onPressed: rollDice, //on press rollDice funcation will called
+              child: const Text('Roll Dice'),
+            ),
+          ],
+        ),
+
+//to style this TextButton
+            TextButton(
+              onPressed: rollDice,
+              style: TextButton.styleFrom(   
+                padding: const EdgeInsets.only(       //this paddin will added to the button
+                    top: 10, bottom: 10, left: 20, right: 20),
+                foregroundColor: const Color.fromARGB(255, 0, 0, 0), //chnage text color
+                textStyle: const TextStyle(fontSize: 24), // change TextStyle
+              ),
+              child: const Text('Roll Dice'),
+            ),
+
+//StatelessWidget --> 
+Not usefull for internally changable widgets
+UI will not updated eventhough inernal values updated
+
+//StatefulWidget -->
+Use for internally changing widgets
+UI get updated according to internal changes
+
+//use statefullWidget to change the images
+
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+class DiceRoller extends StatefulWidget {
+  const DiceRoller({super.key});
+  @override
+  State<DiceRoller> createState() {
+    return _DiceRollerState();
+  }
+}
+
+class _DiceRollerState extends State<DiceRoller> {
+  var activeDiceImg = 'assets/images/dice-1.png';
+
+  void rollDice() {
+    setState(() {  // to re-build the widget when internal thing got changed
+      var diceRoll = Random().nextInt(6) + 1;
+      activeDiceImg = 'assets/images/dice-$diceRoll.png'; // $ followed by the variable name
+    });
+  }
+
+  @override
+  Widget build(context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(
+          activeDiceImg,
+          width: 160,
+        ),
+        const SizedBox(height: 20),  //Use as a margin between two elements
+        TextButton(
+          onPressed: rollDice,
+          style: TextButton.styleFrom(
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
+            foregroundColor: const Color.fromARGB(255, 0, 0, 0),
+            textStyle: const TextStyle(fontSize: 24),
+          ),
+          child: const Text('Roll Dice'),
+        ),
+      ],
+    );
+  }
+}
+
+//TO keep the code clean
+var currentDiceRoll = 2;
+
+  void rollDice() {
+    setState(() {
+      currentDiceRoll = Random().nextInt(6) + 1;
+    });
+  }
+
+//After concatanate
+Image.asset(
+          'assets/images/dice-$currentDiceRoll.png',
+          width: 160,
+        ),
+
+//TO avoid recreation of Random() object
+
+var currentDiceRoll = 2;
+  final randomizer = Random();
+
+  void rollDice() {
+    setState(() {
+      currentDiceRoll = randomizer.nextInt(6) + 1;
+    });
+  }
+
+
+End of section 02 
+--------------------------------------------------------------
+
+//OutlinedButton with border radius
+          OutlinedButton(
+            onPressed: () {},
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            child: const Text('Start Quiz'),
+          ),
+
+//Add a icon to a button
+
+OutlinedButton.icon(    // .icon added
+            onPressed: () {},
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
+            icon: const Icon(Icons.arrow_right_outlined), // Icons to predefined icons
+            label: const Text('Start Quiz'),  // Text --> label
+          ),
+
+
+//Change the active screen when the button is clicked
+
+  Widget? activeScreen;  //null before assign the value
+
+  @override
+  void initState() {  // executed after statefulWidget's State object is initialized
+    activeScreen = StartScreen(switchScreen);
+    super.initState();
+  }
+
+  void switchScreen() {
+    setState(() {         // to rebuild when the state changed
+      activeScreen = const QuestionsScreen();
+    });
+  }
+  OutlinedButton.icon(
+            onPressed: startQuiz,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            label: const Text('Start Quiz'),
+            icon: const Icon(Icons.arrow_right_outlined),
+          ),
+
+//alternative approaches
+
+ternary approach
+conditional if statements
+
+//Create a model to use as a blueprint for Questions
+class QuizQuestion {
+  const QuizQuestion(this.text, this.answers);
+  final String text;
+  final List<String> answers;
+}
+
+//using that model make a list of Questions
+const questions = [
+  QuizQuestion(
+    'What are the main building blocks of Flutter UIs?',
+    [
+      'Widgets',
+      'Components',
+      'Blocks',
+      'Functions',
+    ],
+  ),
+  QuizQuestion('How are Flutter UIs built?', [
+    'By combining widgets in code',
+    'By combining widgets in a visual editor',
+    'By defining widgets in config files',
+    'By using XCode for iOS and Android Studio for Android',
+  ]),
+]
+
+//Create a button widget for show the answers
+class AnswerButton extends StatelessWidget {
+  const AnswerButton(
+      {super.key, required this.answerText, required this.onPressed}); //getting text and the function to call when the button is clicked.
+
+  final String answerText;
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(  //to set different padding to horizontaly and vertically
+          vertical: 10,
+          horizontal: 40,
+        ),
+        backgroundColor: const Color.fromARGB(255, 71, 24, 158),
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(  make corners rounded
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+      child: Text(answerText),
+    );
+  }
+}
+//use map function to show buttons according to number of answers
+
+...currentQuestion.answers.map((answer){  //... to spred the list.  [[1,2,3],5,6] --> [1,2,3,5,6]
+            return AnswerButton(          // because children wants widgets not list.
+              answerText: answer,
+              onPressed: () {},
+            );
+          })
+
+//To stretch the buttons to get the available with
+child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch, //CrossAxisAlignment for horizontal alignmnents
+        mainAxisAlignment: MainAxisAlignment.center, 
+        children: [
+          Text(
+            currentQuestion.text,
+            style: const TextStyle(color: Colors.white),
+          ),
+          const SizedBox(height: 30),
+          ...currentQuestion.answers.map(
+            (answer) {
+              return AnswerButton(
+                answerText: answer,
+                onPressed: () {},
+              );
+            },
+          )
+        ],
+      ),
+
+//To add a margin for the content 
+
+child: Container(
+        margin: const EdgeInsets.all(40),  // container allows to add margins
+        child: Column(                       //wrap this using container
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              currentQuestion.text,
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 30),
+            ...currentQuestion.answers.map(
+              (answer) {
+                return AnswerButton(
+                  answerText: answer,
+                  onPressed: () {},
+                );
+              },
+            )
+          ],
+        ),
+      ),
+
+//to suffel the answers create a get method in the model
+since shuffel() does not return a list it should assign in to a final first
+class QuizQuestion {
+  const QuizQuestion(this.text, this.answers);
+  final String text;
+  final List<String> answers;
+
+  List<String> getShuffledAnswers() {
+    final shuffledList = List.of(answers);
+    shuffledList.shuffle();
+    return shuffledList;
+  }
+}
+
+// Map genaric type
+key values pairs
+
+List<Map<String, Object>> getSummaryData() {
+    final List<Map<String, Object>> summary = [];
+
+    return summary;
+  }
+//add vaues to that list
+
+summary.add(
+        {
+          'question_index': i,
+          'question': questions[i].text,
+          'çorrect_answer': questions[i].answers[0],
+          'chosen_answer': chosenAnswers[i],
+        },
+      );
+
+//Use GoogleFonts to style text
+
+installation cmd --> flutter pub add google_fonts
+
+                    Text(
+                      data['question'] as String,
+                      style: GoogleFonts.lato(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold),
+                    ),
+
+//filter a data from a list using a conditional
+final numCorrectQuestions = summaryData.where((data) {
+      return data['çorrect_answer'] == data['chosen_answer'];
+    })
+
+//Call a function within a text 
+
+'this is ${fun.function()} in the text'
+
+//add a rounded background to a text
+    return Container(
+      width: 30,
+      height: 30,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: isCorrect
+            ? const Color.fromARGB(255, 73, 184, 77)
+            : const Color.fromARGB(255, 212, 55, 43),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Text(
+        questionNumber.toString(),
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Color.fromARGB(255, 255, 255, 255),
+          fontSize: 20,
+        ),
+      ),
+    );
+
+//To make content to get only available width use Expanded
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data['question'] as String,
+                      style: GoogleFonts.lato(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(data['chosen_answer'] as String,style: GoogleFonts.lato(
+                      color: const Color.fromARGB(255, 242, 144, 255),
+                      fontSize: 14,
+                    ),),
+                    Text(data['çorrect_answer'].toString(), style: GoogleFonts.lato(
+                      color: const Color.fromARGB(255, 72, 207, 248),
+                      fontSize: 14,
+                    ),),
+                    const SizedBox(
+                      height: 16,
+                    )
+                  ],
+                ),
+              )
+// to create a scroll view
+
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 500,
+      child: SingleChildScrollView(
+        child: Column(
+            children: summaryData.map((data) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              QuestionIdentifier(
+                questionIndex: data['question_index'] as int,
+                isCorrect: data['çorrect_answer'] == data['chosen_answer'],
+              ),
+              const SizedBox(
+                width: 15,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data['question'] as String,
+                      style: GoogleFonts.lato(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(data['chosen_answer'] as String,style: GoogleFonts.lato(
+                      color: const Color.fromARGB(255, 242, 144, 255),
+                      fontSize: 14,
+                    ),),
+                    Text(data['çorrect_answer'].toString(), style: GoogleFonts.lato(
+                      color: const Color.fromARGB(255, 72, 207, 248),
+                      fontSize: 14,
+                    ),),
+                    const SizedBox(
+                      height: 16,
+                    )
+                  ],
+                ),
+              )
+            ],
+          );
+        }).toList()),
+      ),
+    );
+  }
+
+End of section 3
+==================================================================
+
+/// Expense-Tracker
+
+//Genarate random id for expense model
+install --> dart pub add uuid
+
+import 'package:uuid/uuid.dart';
+final uuid = Uuid();
+class Expense {
+  Expense({
+    required this.titile,
+    required this.date,
+  }):id = uuid.v4();    //using uuid
+  final String id;
+  final String titile;
+  final DateTime date; //DateTime to store date along with DateTime
+}
+
+//Add a cutom type for category that includes predefined values
+
+import 'package:uuid/uuid.dart';
+
+const uuid = Uuid();
+enum Category { food, travel, leisure, work }
+
+class Expense {
+  Expense({
+    required this.titile,
+    required this.amount,
+    required this.date,
+    required this.category,
+  }) : id = uuid.v4();
+  final String id;
+  final String titile;
+  final double amount;
+  final DateTime date;
+  final Category category;
+}
+//That type can use as this
+Expense(
+      titile: 'Flutter Course',
+      amount: 19.99,
+      date: DateTime.now(),
+      category: Category.work, // using dot operator
+    ),
+
+//Card widget to get a card with styles
+
+Widget build(BuildContext context) {
+    return Card(
+      child: Text(expense.titile),
+    );
+  }
+// add padding to Card
+
+    return Card(
+      child: Padding(   //wrap using padding
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          children: [
+            Text(expense.titile),
+          ],
+        ),
+      ),
+    )
+// escape characters
+Text('\$${expense.amount.toStringAsFixed(2)}'),
+
+//to make elements space between add Spacer() widget 
+
+            Row(
+              children: [
+                Text('\$${expense.amount.toStringAsFixed(2)}'),
+                const Spacer(),
+                Row(
+                  children: [
+                    Text(expense.date.toString()),
+                    Text(expense.category.toString().split('.').last),
+                  ],
+                )
+              ],
+            )
+
+//Setting up icons for expenses
+const categoryIcon = {
+  Category.food: Icons.lunch_dining,
+  Category.travel: Icons.flight_takeoff,
+  Category.leisure: Icons.movie,
+  Category.work: Icons.work,
+}
+
+//format dates 
+
+cmd --> flutter pub add intl
+
+import 'package:intl/intl.dart';
+
+final formatter = DateFormat.yMd();  //yMd define how the date should formatted 
+
+String get formattedADate{
+    return formatter.format(date);
+  }
+
+//TO show model bottom sheet 
+void _openAddExpenseOverlay(){
+    showModalBottomSheet(context: context, builder: (ctx) => Text('Add Expense in model bottom sheet'),);
+  }
+
+//To get text user inputs
+children: [
+          TextField(maxLength: 50,
+          keyboardType: TextInputType.text,)  //to tell which keyboard should open
+        ],
+
+//Store those inputs onChange
+
+var _enteredTitle = '';
+  void _saveTitleInput(String inputValue) {
+    _enteredTitle = inputValue;
+
+exicute this function when the button is clicked
+  }
+          TextField(
+            maxLength: 50,
+            onChanged: _saveTitleInput,
+            decoration: const InputDecoration(
+              label: Text('Title'),
+            ),
+          )
+
+//handle inputs using  TextEditingController
+
+  final _titleConatroller = TextEditingController();
+
+  @override
+  void dispose() {
+    _titleConatroller.dispose();  //SHould distroy the controller when finidhed using it
+    super.dispose();
+  }
+
+  TextField(
+            maxLength: 50,
+            controller: _titleConatroller,
+            decoration: const InputDecoration(
+              label: Text('Title'),
+            ),
+          ),
+
+//create  the date picker 
+
+void presentDatePicker(){
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year-1, now.month, now.day);
+    showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: firstDate,
+      lastDate: now,
+    );
+  }
+call the function when the button is clicked
+
+      IconButton(
+        onPressed: presentDatePicker,
+        icon: const Icon(
+          Icons.calendar_month,
+        ),
+      ),
+
+//To add new expense in to the list 
+
+expenses.dart -->
+  void _openAddExpenseOverlay() {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => NewExpense(onAddExpense: _addExpense),
+    );
+  }
+
+  void _addExpense(Expense expense) {
+    setState(() {
+      _registeredExpenses.add(expense);
+    });
+  }
+
+new_expense.dart -->
+
+constructor -- >
+
+const NewExpense({super.key, required this.onAddExpense});
+
+  final void Function(Expense expense) onAddExpense;
+
+in _submitExpensData, after validation(after return)
+
+widget.onAddExpense(
+      Expense(
+        titile: _titleConatroller.text,
+        amount: enteredAmount,
+        date: _selectedDate!,
+        category: _seectedCategory,
+      ),
+    );
+
+
+Section 6 --> Responsive UI
+
+import 'package:flutter/services.dart';
+
+
+WidgetsFlutterBinding.ensureInitialized();
+SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,  // only allow this Orientation
+  ]).then((fn) {
+
+    //the code
+  })
+
+//To make the expenses page resoponsive 
+
+get the current width 
+
+final width = MediaQuery.of(context).size.width;
+
+using that with -->
+
+return Scaffold(
+        appBar: AppBar(
+          title: const Text('Expenses Tracker'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: _openAddExpenseOverlay,
+            ),
+          ],
+        ),
+        body: width < 600   // check current width 
+            ? Column(
+                children: [
+                  Chart(expenses: _registeredExpenses),
+                  Expanded(
+                    child: mainContent,
+                  ),
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(   //had to wrap this with expanded because chart width has set to douvle.infinity
+                    child: Chart(expenses: _registeredExpenses),
+                  ),
+                  Expanded(
+                    child: mainContent,
+                  ),
+                ],
+              ));
+
+
+//In the new expenses page
+
+need to set bottom padding to + keyboad height and the fields should be scrollable 
+
+final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+
+return SingleChildScrollView(  // need to wrap thos to achieve scrollview
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, 48, 16, keyboardSpace + 16), add keyboard height
+      )
+)
+
+//Re-arrange the new expense page portrait 
+
+Widget build(BuildContext context) {
+    final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+
+    return LayoutBuilder(builder: (ctx, constraints) {
+      final width = constraints.maxWidth;
+      return SizedBox(
+        Column(
+          children: [
+                          if (width >= 600)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          maxLength: 50,
+                          controller: _titleConatroller,
+                          decoration: const InputDecoration(
+                            label: Text('Title'),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 24),
+                      Expanded(
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          controller: _priceConatroller,
+                          decoration: const InputDecoration(
+                            prefixText: '\$ ',
+                            label: Text('Amount'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  TextField(
+                    maxLength: 50,
+                    controller: _titleConatroller,
+                    decoration: const InputDecoration(
+                      label: Text('Title'),
+                    ),
+                  ),
+
+          ]
+        )
+      )
+    }
+  )
+}
+
+
+
+//Section 8 Meals app
+
