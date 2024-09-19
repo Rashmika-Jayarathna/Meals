@@ -970,3 +970,11 @@ Widget build(BuildContext context) {
 
 //Section 8 Meals app
 
+
+//To navigate to a page(this work as a stack)
+Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) =>
+            MealsScrean(title: category.title, meals: filteredMeals),
+      ),
+    );
